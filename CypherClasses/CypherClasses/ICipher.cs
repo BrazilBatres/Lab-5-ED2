@@ -6,7 +6,7 @@ namespace CypherClasses
 {
     public interface ICipher
     {
-        bool Cipher(byte[] message, out byte[] cipheredMsg);
+        bool Cipher(string route, out byte[] cipheredMsg);
         bool Decipher(byte[] EncryptedMessage, out byte[]Message);
     }
 }

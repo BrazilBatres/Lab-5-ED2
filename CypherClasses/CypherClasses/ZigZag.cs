@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace CypherClasses
@@ -24,8 +25,16 @@ namespace CypherClasses
         {
             ToFillChar = toFill;
         }
-        public bool Cipher(byte[] message, out byte[] CipheredMsg)
+        public bool Cipher(string route, out byte[] CipheredMsg)
         {
+            byte[] message;
+            using (FileStream fs = File.OpenRead(route))
+            {
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    message = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                }
+            }
             if (validLevel)
             {
                 Characters = new List<byte>[Levels];

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.CompilerServices;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace CypherClasses
@@ -30,10 +32,16 @@ namespace CypherClasses
             }
             return !invalidKey;
         }
-        public bool Cipher(byte[] message, out byte[] CipheredMsg)
+        public bool Cipher(string route, out byte[] CipheredMsg)
         {
-
-            
+            byte[] message;
+            using (FileStream fs = File.OpenRead(route))
+            {
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    message = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                }
+            }
             if (!invalidKey)
             {
                 FillDictionary(true);

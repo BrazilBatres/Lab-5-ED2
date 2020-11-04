@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CypherClasses", "CypherClasses\CypherClasses.csproj", "{357BEC4A-31D4-488A-B7B4-791B436295DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{A205C87B-947E-4438-876E-CB157C2ADEDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "TestConsole\TestConsole.csproj", "{A205C87B-947E-4438-876E-CB157C2ADEDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-Interface", "API-Interface\API-Interface.csproj", "{12F1324F-09D8-4401-ABE0-1F1DE2E8D013}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A205C87B-947E-4438-876E-CB157C2ADEDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A205C87B-947E-4438-876E-CB157C2ADEDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A205C87B-947E-4438-876E-CB157C2ADEDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12F1324F-09D8-4401-ABE0-1F1DE2E8D013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F1324F-09D8-4401-ABE0-1F1DE2E8D013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F1324F-09D8-4401-ABE0-1F1DE2E8D013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F1324F-09D8-4401-ABE0-1F1DE2E8D013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
