@@ -65,9 +65,9 @@ namespace CypherClasses
             {
                 byte[,] aux = Matrixes.First();
                 Matrixes.Remove(Matrixes.First());
-                for (int i = 0; i < rows; i++)
+                for (int i = 0; i < columns; i++)
                 {
-                    for (int k = 0; k < columns; k++)
+                    for (int k = 0; k < rows; k++)
                     {
                         if (aux[k,i] != 170)
                         {
@@ -78,10 +78,17 @@ namespace CypherClasses
             }
             return toReturn.ToArray();
         }
-        public bool Decipher(byte[] EncryptedMessage, out byte[] Message)
+        public bool Decipher(string route, out byte[] Message)
         {
-            Message = null;
-            return false;
+            using (FileStream fs = File.OpenRead(route))
+            {
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    FillMatrixes(reader.ReadBytes(Convert.ToInt32(fs.Length)));
+                    Message = VerticalArrangement();
+                    return true;
+                }
+            }
         }
     }
 }

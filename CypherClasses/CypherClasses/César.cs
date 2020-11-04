@@ -120,8 +120,16 @@ namespace CypherClasses
         }
 
         
-        public bool Decipher(byte[] CipheredMsg, out byte[] Message)
+        public bool Decipher(string route, out byte[] Message)
         {
+            byte[] CipheredMsg;
+            using (FileStream fs = File.OpenRead(route))
+            {
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                }
+            }
             if (!invalidKey)
             {
                 FillDictionary(false);

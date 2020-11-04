@@ -126,8 +126,16 @@ namespace CypherClasses
         {
             return ToFillChar;
         }
-        public bool Decipher(byte[] CipheredMsg,  out byte[] Message)
+        public bool Decipher(string route,  out byte[] Message)
         {
+            byte[] CipheredMsg;
+            using (FileStream fs = File.OpenRead(route))
+            {
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                }
+            }
             int CompleteWaves = (CipheredMsg.Length) / (2 * (Levels - 1));
             int Residue = (CipheredMsg.Length) % (2 * (Levels - 1));
             Characters = new List<byte>[Levels];
