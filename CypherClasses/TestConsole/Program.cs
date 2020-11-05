@@ -37,12 +37,12 @@ namespace TestConsole
             //        Console.WriteLine("fail");
             //    }
             //    Console.ReadKey();
-            string uploadPath = @"C:\Users\joseg\Desktop\Pruebas Cifrado\Cifrados\cuento.rt";
+            string uploadPath = @"C:\Users\joseg\Desktop\Pruebas Cifrado\Cifrados\cuento2.rt";
             byte[] FileBytes;
             Ruta ruta = new Ruta();
             ruta.SetSize(3, 3);
             ruta.Decipher(uploadPath, out FileBytes);
-            using (FileStream fs = File.Create(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Descifrados\cuento.txtf"))
+            using (FileStream fs = File.Create(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Descifrados\cuento2.txt"))
             {
                 fs.Write(FileBytes);
             }
