@@ -83,11 +83,12 @@ namespace API_Interface.Controllers
 
         [HttpPost]
         [Route("decipher/{method}")]
-        public async Task<ActionResult> Decypher(string method, [FromForm] CipherInput Key)
+        public async Task<ActionResult> Decypher([FromForm] CipherInput Key)
         {
             string path = _env.ContentRootPath;
             string OriginalName = Key.File.FileName;
             string uploadPath = path + @"\Decipher\" + OriginalName;
+            string lastChar = OriginalName.Substring(OriginalName.Length - 1, 1);
             byte[] FileBytes;
 
             try
@@ -99,22 +100,21 @@ namespace API_Interface.Controllers
                     {
                         await Key.File.CopyToAsync(fs);
                     }
-                    method = method.ToLower();
-                    switch (method)
+                    switch (lastChar)
                     {
-                        case "cesar":
+                        case "r":
                             César césar = new César();
                             césar.SetKey(Key.Key.Word);
                             césar.Decipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".txt");
 
-                        case "zigzag":
+                        case "z":
                             ZigZag zigzag = new ZigZag();
                             zigzag.SetLevels(Key.Key.Levels);
                             zigzag.Decipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".txt");
 
-                        case "ruta":
+                        case "t":
                             Ruta ruta = new Ruta();
                             ruta.SetSize(Key.Key.Rows, Key.Key.Columns);
                             ruta.Decipher(uploadPath, out FileBytes);
