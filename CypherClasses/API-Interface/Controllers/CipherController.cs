@@ -91,28 +91,33 @@ namespace API_Interface.Controllers
             string lastChar = OriginalName.Substring(OriginalName.Length - 1, 1);
             byte[] FileBytes;
 
-            try
-            {
+            //try
+            //{
                 if (Key.File != null)
                 {
-                    string filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
+              
                     using (FileStream fs = System.IO.File.Create(uploadPath))
                     {
                         await Key.File.CopyToAsync(fs);
                     }
+                string filename = "";
                     switch (lastChar)
                     {
                         case "r":
+
                             César césar = new César();
                             césar.SetKey(Key.Key.Word);
                             césar.Decipher(uploadPath, out FileBytes);
+                            filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 4);
                             filename += ".txt";
                             return File(FileBytes, "text/plain", filename);
 
                         case "z":
+
                             ZigZag zigzag = new ZigZag();
                             zigzag.SetLevels(Key.Key.Levels);
                             zigzag.Decipher(uploadPath, out FileBytes);
+                            filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
                             filename += ".txt";
                             return File(FileBytes, "text/plain", filename );
 
@@ -120,6 +125,7 @@ namespace API_Interface.Controllers
                             Ruta ruta = new Ruta();
                             ruta.SetSize(Key.Key.Rows, Key.Key.Columns);
                             ruta.Decipher(uploadPath, out FileBytes);
+                            filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
                             filename += ".txt";
                             return File(FileBytes, "text/plain", filename);
 
@@ -132,11 +138,11 @@ namespace API_Interface.Controllers
                 {
                     return StatusCode(500);
                 }
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    return StatusCode(500);
+            //}
         }
 
 
