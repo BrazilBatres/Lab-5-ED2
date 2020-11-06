@@ -50,7 +50,6 @@ namespace CypherClasses
         }
         public void FillSpiral(byte[] message)
         {
-            
             int index = 0;
             while (index < message.Length)
             {
@@ -165,46 +164,52 @@ namespace CypherClasses
             List<byte> toReturn = new List<byte>();
             while (Matrixes.Count != 0)
             {
+                int i = 0;
+                int m = rows;
+                int l = 0;
+                int n = columns;
+                int k = 0;
+
                 byte[,] aux = Matrixes.First();
                 Matrixes.Remove(Matrixes.First());
-                int n = columns;
-                int m = rows;
-                int i, k = 0, l = 0;
                 while (k < m && l < n)
                 {
+                    
                     for (i = l; i < n; ++i)
                     {
                         if (aux[k,i] != 170)
                         {
-                           toReturn.Add(aux[k, i]);
-                            
+                            toReturn.Add(aux[k, i]);
                         }
                     }
                     k++;
+
                     for (i = k; i < m; ++i)
                     {
-                        if (aux[k, i] != 170)
+                        if (aux[i, n-1] != 170)
                         {
                             toReturn.Add(aux[i, n - 1]);
                         }
                     }
                     n--;
+
                     if (k < m)
                     {
                         for (i = n - 1; i >= l; --i)
                         {
-                            if (aux[k, i] != 170)
+                            if (aux[m-1,i] != 170)
                             {
                                 toReturn.Add(aux[m - 1, i]);
                             }
                         }
                         m--;
                     }
+
                     if (l < n)
                     {
                         for (i = m - 1; i >= k; --i)
                         {
-                            if (aux[k, i] != 170)
+                            if (aux[i,l] != 170)
                             {
                                 toReturn.Add(aux[i, l]);
                             }
