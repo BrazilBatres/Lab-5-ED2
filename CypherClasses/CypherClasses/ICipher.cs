@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CypherClasses
 {
-    public interface ICipher
+    public interface ICipher<T>
     {
-        bool Cipher(string route, out byte[] cipheredMsg);
-        bool Decipher(string route, out byte[] Message);
+        bool Cipher(string route, out byte[] cipheredMsg, T Key);
+        bool Decipher(string route, out byte[] Message, T Key);
     }
 }

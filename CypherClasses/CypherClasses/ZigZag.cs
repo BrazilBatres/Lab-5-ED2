@@ -5,14 +5,15 @@ using System.Text;
 
 namespace CypherClasses
 {
-    public class ZigZag : ICipher
+    public class ZigZag : ICipher<int>
     {
         int Levels = 0;
         List<byte>[] Characters;
-        bool validLevel = false;
+        //bool validLevel = false;
        byte ToFillChar;
         public bool SetLevels(int levels)
         {
+            bool validLevel;
             if (levels > 0)
             {
                 Levels = levels;
@@ -25,9 +26,10 @@ namespace CypherClasses
         {
             ToFillChar = toFill;
         }
-        public bool Cipher(string route, out byte[] CipheredMsg)
+        public bool Cipher(string route, out byte[] CipheredMsg, int levels)
         {
             byte[] message;
+            bool validLevel = SetLevels(levels);
             using (FileStream fs = File.OpenRead(route))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
@@ -126,9 +128,10 @@ namespace CypherClasses
         {
             return ToFillChar;
         }
-        public bool Decipher(string route,  out byte[] Message)
+        public bool Decipher(string route,  out byte[] Message, int levels)
         {
             byte[] CipheredMsg;
+            bool validLevel = SetLevels(levels);
             using (FileStream fs = File.OpenRead(route))
             {
                 using (BinaryReader reader = new BinaryReader(fs))

@@ -6,17 +6,17 @@ using System.Text;
 
 namespace CypherClasses
 {
-    public class César : ICipher
+    public class César : ICipher<string>
     {
         Dictionary<char, char> LetterPairs = new Dictionary<char, char>();
-        bool invalidKey = true;
+        //bool invalidKey = true;
         string Key = "";
         
         public bool SetKey(string key)
         {
             Key = key.ToUpper();
             
-            invalidKey = false;
+            bool invalidKey = false;
             List<char> auxList = new List<char>();
             
             for (int i = 0; i < Key.Length; i++)
@@ -25,25 +25,27 @@ namespace CypherClasses
                 {
                     
                     invalidKey = true;
-                    LetterPairs.Clear();
+                    
                     break;
                 }
                 
             }
             return !invalidKey;
         }
-        public bool Cipher(string route, out byte[] CipheredMsg)
+        public bool Cipher(string route, out byte[] CipheredMsg, string _key)
         {
+           
             byte[] message;
-            using (FileStream fs = File.OpenRead(route))
+            bool validKey = SetKey(_key);
+            if (validKey)
             {
-                using (BinaryReader reader = new BinaryReader(fs))
+                using (FileStream fs = File.OpenRead(route))
                 {
-                    message = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                    using (BinaryReader reader = new BinaryReader(fs))
+                    {
+                        message = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                    }
                 }
-            }
-            if (!invalidKey)
-            {
                 FillDictionary(true);
                 CipheredMsg = ReplaceChars(message);
             }
@@ -52,7 +54,7 @@ namespace CypherClasses
             
             LetterPairs.Clear();
             
-            return !invalidKey;
+            return validKey;
             
         }
         byte[] ReplaceChars(byte[] Message)
@@ -120,18 +122,20 @@ namespace CypherClasses
         }
 
         
-        public bool Decipher(string route, out byte[] Message)
+        public bool Decipher(string route, out byte[] Message, string _key)
         {
             byte[] CipheredMsg;
-            using (FileStream fs = File.OpenRead(route))
+            bool validKey = SetKey(_key);
+            
+            if (validKey)
             {
-                using (BinaryReader reader = new BinaryReader(fs))
+                using (FileStream fs = File.OpenRead(route))
                 {
-                    CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                    using (BinaryReader reader = new BinaryReader(fs))
+                    {
+                        CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                    }
                 }
-            }
-            if (!invalidKey)
-            {
                 FillDictionary(false);
                 Message = ReplaceChars(CipheredMsg);
             }
@@ -140,7 +144,7 @@ namespace CypherClasses
 
             LetterPairs.Clear();
             
-            return !invalidKey;
+            return validKey;
         }
 
         
