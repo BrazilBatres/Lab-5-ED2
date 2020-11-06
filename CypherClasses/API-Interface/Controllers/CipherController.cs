@@ -47,19 +47,19 @@ namespace API_Interface.Controllers
                     {
                         case "cesar":
                             César césar = new César();
-                            césar.SetKey(Key.Key.Word);
+                            césar.SetKey(Key.Word);
                             césar.Cipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".csr");
 
                         case "zigzag":
                             ZigZag zigzag = new ZigZag();
-                            zigzag.SetLevels(Key.Key.Levels);
+                            zigzag.SetLevels(Key.Levels);
                             zigzag.Cipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".zz");
 
                         case "ruta":
                             Ruta ruta = new Ruta();
-                            ruta.SetSize(Key.Key.Rows, Key.Key.Columns);
+                            ruta.SetSize(Key.Rows, Key.Columns);
                             ruta.Cipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".rt");
 
@@ -106,7 +106,7 @@ namespace API_Interface.Controllers
                         case "r":
 
                             César césar = new César();
-                            césar.SetKey(Key.Key.Word);
+                            césar.SetKey(Key.Word);
                             césar.Decipher(uploadPath, out FileBytes);
                             filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 4);
                             filename += ".txt";
@@ -115,7 +115,7 @@ namespace API_Interface.Controllers
                         case "z":
 
                             ZigZag zigzag = new ZigZag();
-                            zigzag.SetLevels(Key.Key.Levels);
+                            zigzag.SetLevels(Key.Levels);
                             zigzag.Decipher(uploadPath, out FileBytes);
                             filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
                             filename += ".txt";
@@ -123,7 +123,7 @@ namespace API_Interface.Controllers
 
                         case "t":
                             Ruta ruta = new Ruta();
-                            ruta.SetSize(Key.Key.Rows, Key.Key.Columns);
+                            ruta.SetSize(Key.Rows, Key.Columns);
                             ruta.Decipher(uploadPath, out FileBytes);
                             filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
                             filename += ".txt";

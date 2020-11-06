@@ -10,6 +10,9 @@ namespace API_Interface
     public class CipherInput
     {
         public IFormFile File { get; set; }
-        public CipherKey Key { get; set; }
+        public string Word { get; set; }
+        public int Levels { get; set; }
+        public int Rows { get; set; }
+        public int Columns { get; set; }
     }
 }
