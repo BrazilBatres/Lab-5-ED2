@@ -26,40 +26,40 @@ namespace API_Interface.Controllers
 
         [HttpPost]
         [Route("cipher/{method}")]
-        public async Task<ActionResult> Cypher(string method, [FromForm] IFormFile file, CypherClasses.CipherKey key)
+        public async Task<ActionResult> Cypher(string method, [FromForm] CipherInput Key)
         {
             string path = _env.ContentRootPath;
-            string OriginalName = file.FileName;
-            string uploadPath = path + @"\Uploads\" + OriginalName;
+            string OriginalName = Key.File.FileName;
+            string uploadPath = path + @"\Cipher\" + OriginalName;
             byte[] FileBytes;
-            
-            //try
-            //{
-                if (file != null)
+
+            try
+            {
+                if (Key.File != null)
                 {
-                    string filename = file.FileName.Substring(0, file.FileName.Length - 4);
+                    string filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 4);
                     using (FileStream fs = System.IO.File.Create(uploadPath))
                     {
-                        await file.CopyToAsync(fs);
+                        await Key.File.CopyToAsync(fs);
                     }
                     method = method.ToLower();
                     switch (method)
                     {
                         case "cesar":
                             César césar = new César();
-                            césar.SetKey(key.Word);
+                            césar.SetKey(Key.Key.Word);
                             césar.Cipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".csr");
 
                         case "zigzag":
                             ZigZag zigzag = new ZigZag();
-                            zigzag.SetLevels(key.Levels);
+                            zigzag.SetLevels(Key.Key.Levels);
                             zigzag.Cipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".zz");
 
                         case "ruta":
                             Ruta ruta = new Ruta();
-                            ruta.SetSize(key.Rows, key.Columns);
+                            ruta.SetSize(Key.Key.Rows, Key.Key.Columns);
                             ruta.Cipher(uploadPath, out FileBytes);
                             return File(FileBytes, "text/plain", filename + ".rt");
 
@@ -72,42 +72,70 @@ namespace API_Interface.Controllers
                 {
                     return StatusCode(500);
                 }
-            //}
-            //catch (Exception)
-            //{
-            //    return StatusCode(500);
-            //}
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
-        //[Route("decompress")]
-        //public async Task<ActionResult> Decompress([FromForm] IFormFile file)
-        //{
-        //    string path = _env.ContentRootPath;
-        //    string OriginalName = file.FileName;
-        //    OriginalName = OriginalName.Substring(0, OriginalName.Length - 4);
-        //    string downloadPath = path + @"\Compressions\" + OriginalName;
-        //    byte[] FileBytes;
-        //    try
-        //    {
-        //        if (file != null)
-        //        {
-        //            using (FileStream fs = System.IO.File.Create(downloadPath))
-        //            {
-        //                await file.CopyToAsync(fs);
-        //            }
-        //            LZW Compressor = new LZW(downloadPath);
-        //            FileBytes = Compressor.Decompress(downloadPath, 100);
-        //            return File(FileBytes, "text/plain", Compressor.Name); ;
-        //        }
-        //        else
-        //        {
-        //            return StatusCode(500);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return StatusCode(500);
-        //    }
-        //}
+
+
+
+        [HttpPost]
+        [Route("decipher/{method}")]
+        public async Task<ActionResult> Decypher(string method, [FromForm] CipherInput Key)
+        {
+            string path = _env.ContentRootPath;
+            string OriginalName = Key.File.FileName;
+            string uploadPath = path + @"\Decipher\" + OriginalName;
+            byte[] FileBytes;
+
+            try
+            {
+                if (Key.File != null)
+                {
+                    string filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
+                    using (FileStream fs = System.IO.File.Create(uploadPath))
+                    {
+                        await Key.File.CopyToAsync(fs);
+                    }
+                    method = method.ToLower();
+                    switch (method)
+                    {
+                        case "cesar":
+                            César césar = new César();
+                            césar.SetKey(Key.Key.Word);
+                            césar.Decipher(uploadPath, out FileBytes);
+                            return File(FileBytes, "text/plain", filename + ".txt");
+
+                        case "zigzag":
+                            ZigZag zigzag = new ZigZag();
+                            zigzag.SetLevels(Key.Key.Levels);
+                            zigzag.Decipher(uploadPath, out FileBytes);
+                            return File(FileBytes, "text/plain", filename + ".txt");
+
+                        case "ruta":
+                            Ruta ruta = new Ruta();
+                            ruta.SetSize(Key.Key.Rows, Key.Key.Columns);
+                            ruta.Decipher(uploadPath, out FileBytes);
+                            return File(FileBytes, "text/plain", filename + ".txt");
+
+                        default:
+                            return StatusCode(500);
+                    }
+
+                }
+                else
+                {
+                    return StatusCode(500);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
 
     }
 }
