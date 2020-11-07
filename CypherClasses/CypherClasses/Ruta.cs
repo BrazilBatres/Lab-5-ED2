@@ -6,23 +6,38 @@ using System.Text;
 
 namespace CypherClasses
 {
-    public class Ruta : ICipher
+    public class Ruta : ICipher<int[]>
     {
         List<byte[,]> Matrixes = new List<byte[,]>();
         int columns = 0;
         int rows = 0;
-        public void SetSize(int Rows, int Columns)
+        public bool SetSize(int Rows, int Columns)
         {
-            rows = Rows;
-            columns = Columns;
+            if (Rows >0 && Columns>0)
+            {
+                rows = Rows;
+                columns = Columns;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-        public bool Cipher(string route, out byte[] cipheredMsg)
+        public bool Cipher(string route, out byte[] cipheredMsg, int[] size)
         {
+            SetSize(size[0], size[1]);
             using (FileStream fs = File.OpenRead(route))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    FillSpiral(reader.ReadBytes(Convert.ToInt32(fs.Length)));
+                    int counter = 0;
+                    while (counter<fs.Length)
+                    {
+                        byte[] ByteArray = reader.ReadBytes(1000);
+                        FillSpiral(ByteArray);
+                        counter += 100;
+                    }
                     cipheredMsg = HorizontalArrangement();
                     return true;
                 }
@@ -121,13 +136,20 @@ namespace CypherClasses
                 Matrixes.Add(aux);
             }
         }
-        public bool Decipher(string route, out byte[] Message)
+        public bool Decipher(string route, out byte[] Message, int[]size)
         {
+            SetSize(size[0], size[1]);
             using (FileStream fs = File.OpenRead(route))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    FillHorizontal(reader.ReadBytes(Convert.ToInt32(fs.Length)));
+                    int counter = 0;
+                    while (counter < fs.Length)
+                    {
+                        byte[] ByteArray = reader.ReadBytes(1000);
+                        FillHorizontal(ByteArray);
+                        counter += 100;
+                    }
                     Message = SpiralArrangement();
                     return true;
                 }

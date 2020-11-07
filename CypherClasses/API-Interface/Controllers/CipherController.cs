@@ -33,10 +33,11 @@ namespace API_Interface.Controllers
             string uploadPath = path + @"\Cipher\" + OriginalName;
             byte[] FileBytes;
 
-            try
-            {
+            //try
+            //{
                 if (Key.File != null)
                 {
+                    bool okCypher = false;
                     string filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 4);
                     using (FileStream fs = System.IO.File.Create(uploadPath))
                     {
@@ -47,20 +48,32 @@ namespace API_Interface.Controllers
                     {
                         case "cesar":
                             César césar = new César();
-                            césar.SetKey(Key.Word);
-                            césar.Cipher(uploadPath, out FileBytes);
+                            okCypher = césar.Cipher(uploadPath, out FileBytes, Key.Word);
+                            if (okCypher==false)
+                            {
+                                return StatusCode(500);
+                            };
                             return File(FileBytes, "text/plain", filename + ".csr");
 
                         case "zigzag":
                             ZigZag zigzag = new ZigZag();
-                            zigzag.SetLevels(Key.Levels);
-                            zigzag.Cipher(uploadPath, out FileBytes);
+                            okCypher = zigzag.Cipher(uploadPath, out FileBytes, Key.Levels);
+                            if (okCypher==false)
+                            {
+                                return StatusCode(500);
+                            }
                             return File(FileBytes, "text/plain", filename + ".zz");
 
                         case "ruta":
+                            int[] Size = new int[2];
+                            Size[0] = Key.Rows;
+                            Size[1] = Key.Columns;
                             Ruta ruta = new Ruta();
-                            ruta.SetSize(Key.Rows, Key.Columns);
-                            ruta.Cipher(uploadPath, out FileBytes);
+                            okCypher = ruta.Cipher(uploadPath, out FileBytes, Size);
+                            if (okCypher == false)
+                            {
+                                return StatusCode(500);
+                            }
                             return File(FileBytes, "text/plain", filename + ".rt");
 
                         default:
@@ -72,11 +85,11 @@ namespace API_Interface.Controllers
                 {
                     return StatusCode(500);
                 }
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    return StatusCode(500);
+            //}
         }
 
 
@@ -91,11 +104,11 @@ namespace API_Interface.Controllers
             string lastChar = OriginalName.Substring(OriginalName.Length - 1, 1);
             byte[] FileBytes;
 
-            //try
-            //{
+            try
+            {
                 if (Key.File != null)
                 {
-              
+                    bool okCypher = false;
                     using (FileStream fs = System.IO.File.Create(uploadPath))
                     {
                         await Key.File.CopyToAsync(fs);
@@ -106,8 +119,11 @@ namespace API_Interface.Controllers
                         case "r":
 
                             César césar = new César();
-                            césar.SetKey(Key.Word);
-                            césar.Decipher(uploadPath, out FileBytes);
+                            okCypher = césar.Decipher(uploadPath, out FileBytes, Key.Word);
+                            if (okCypher==false)
+                            {
+                                return StatusCode(500);
+                            }
                             filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 4);
                             filename += ".txt";
                             return File(FileBytes, "text/plain", filename);
@@ -115,16 +131,25 @@ namespace API_Interface.Controllers
                         case "z":
 
                             ZigZag zigzag = new ZigZag();
-                            zigzag.SetLevels(Key.Levels);
-                            zigzag.Decipher(uploadPath, out FileBytes);
+                            okCypher = zigzag.Decipher(uploadPath, out FileBytes, Key.Levels);
+                            if (okCypher == false)
+                            {
+                                return StatusCode(500);
+                            }
                             filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
                             filename += ".txt";
                             return File(FileBytes, "text/plain", filename );
 
                         case "t":
+                            int[] Size = new int[2];
+                            Size[0] = Key.Rows;
+                            Size[1] = Key.Columns;
                             Ruta ruta = new Ruta();
-                            ruta.SetSize(Key.Rows, Key.Columns);
-                            ruta.Decipher(uploadPath, out FileBytes);
+                            okCypher = ruta.Decipher(uploadPath, out FileBytes, Size);
+                            if (okCypher==false)
+                            {
+                                return StatusCode(500);
+                            }
                             filename = Key.File.FileName.Substring(0, Key.File.FileName.Length - 3);
                             filename += ".txt";
                             return File(FileBytes, "text/plain", filename);
@@ -138,11 +163,11 @@ namespace API_Interface.Controllers
                 {
                     return StatusCode(500);
                 }
-            //}
-            //catch (Exception)
-            //{
-            //    return StatusCode(500);
-            //}
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
 

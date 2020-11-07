@@ -34,7 +34,7 @@ namespace CypherClasses
         }
         public bool Cipher(string route, out byte[] CipheredMsg, string _key)
         {
-           
+            CipheredMsg = null;
             byte[] message;
             bool validKey = SetKey(_key);
             if (validKey)
@@ -43,13 +43,21 @@ namespace CypherClasses
                 {
                     using (BinaryReader reader = new BinaryReader(fs))
                     {
-                        message = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                        int counter = 0;
+                        FillDictionary(true);
+                        while (counter<fs.Length)
+                        {
+                            message = reader.ReadBytes(1000);
+                            
+                            CipheredMsg = ReplaceChars(message);
+                            counter += 100;
+                        }
+                        
                     }
                 }
-                FillDictionary(true);
-                CipheredMsg = ReplaceChars(message);
+                
             }
-            else CipheredMsg = null;
+            
             
             
             LetterPairs.Clear();
@@ -124,6 +132,7 @@ namespace CypherClasses
         
         public bool Decipher(string route, out byte[] Message, string _key)
         {
+            Message = null;
             byte[] CipheredMsg;
             bool validKey = SetKey(_key);
             
@@ -133,13 +142,19 @@ namespace CypherClasses
                 {
                     using (BinaryReader reader = new BinaryReader(fs))
                     {
-                        CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                        int counter = 0;
+                        while (counter<fs.Length)
+                        {
+                            CipheredMsg = reader.ReadBytes(1000);
+                            FillDictionary(false);
+                            Message = ReplaceChars(CipheredMsg);
+                            counter += 100;
+                        }
                     }
                 }
-                FillDictionary(false);
-                Message = ReplaceChars(CipheredMsg);
+                
             }
-            else Message = null;
+            
             
 
             LetterPairs.Clear();
