@@ -9,7 +9,6 @@ namespace CypherClasses
     {
         int Levels = 0;
         List<byte>[] Characters;
-        //bool validLevel = false;
        byte ToFillChar;
         public bool SetLevels(int levels)
         {
@@ -28,22 +27,13 @@ namespace CypherClasses
         }
         public bool Cipher(string route, out byte[] CipheredMsg, int levels)
         {
-            //byte[] message;
             bool validLevel = SetLevels(levels);
-            //using (FileStream fs = File.OpenRead(route))
-            //{
-            //    using (BinaryReader reader = new BinaryReader(fs))
-            //    {
-            //        message = reader.ReadBytes(Convert.ToInt32(fs.Length));
-            //    }
-            //}
             if (validLevel)
             {
                 Characters = new List<byte>[Levels];
                 CipheredMsg = LevelReading(ZigZagDistribution(route));
             }
             else CipheredMsg = null;
-            
             return validLevel;
         }
         int ZigZagDistribution(string route)
@@ -84,19 +74,6 @@ namespace CypherClasses
                     
                 }
             }
-            
-            
-            //Se crea nuevo vector con el mensaje original pero agregando los caracteres de relleno
-            //byte[] NewText = new byte[Message.Length + FillCharsQ];
-            //for (int i = 0; i < Message.Length; i++)
-            //{
-            //    NewText[i] = Message[i];
-            //}
-
-            //for (int i = Message.Length; i < NewText.Length; i++)
-            //{
-            //    NewText[i] = ToFillChar;
-            //}
             if (FillCharsQ > 0)
             {
                 
@@ -109,13 +86,10 @@ namespace CypherClasses
                     Characters[ToAssignLevel].Add(ToFillChar);
                 }
             }
-            
-            
             return toReturn + FillCharsQ;
         }
         void FindFillChar(byte[] message)
         {
-           
             int fillChar = ToFillChar;
             for (int i = fillChar; i < 256; i++)
             {
@@ -135,8 +109,6 @@ namespace CypherClasses
                 }
             }
             ToFillChar = (byte)fillChar;
-            
-
         }
         byte[] LevelReading(int length)
         {
@@ -158,16 +130,7 @@ namespace CypherClasses
         }
         public bool Decipher(string route,  out byte[] Message, int levels)
         {
-            //byte[] CipheredMsg;
             bool validLevel = SetLevels(levels);
-            //using (FileStream fs = File.OpenRead(route))
-            //{
-            //    using (BinaryReader reader = new BinaryReader(fs))
-            //    {
-            //        CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
-            //    }
-            //}
-            
             Characters = new List<byte>[Levels];
             int messageLength = HorizontalDistribution(route, out int Residue);
             if (validLevel && Residue == 0)
@@ -185,7 +148,6 @@ namespace CypherClasses
         int HorizontalDistribution(string route, out int Residue)
         {
             int ToReturn = 0;
-            //Se inicializan las Listas
             for (int i = 0; i < Characters.Length; i++)
             {
                 Characters[i] = new List<byte>();
@@ -202,7 +164,6 @@ namespace CypherClasses
                         int counter = 0;
                         int index = 0;
                         int level = 0;
-                        bool levelchange = false;
                         while (counter < fs.Length)
                         {
                             byte[] _message = reader.ReadBytes(1000);
@@ -222,7 +183,6 @@ namespace CypherClasses
                                             if (i < _message.Length)
                                             {
                                                 Characters[level].Add(_message[i]);
-
                                                 index++;
                                             }
                                             else break;
@@ -231,7 +191,6 @@ namespace CypherClasses
                                         {
                                             level++;
                                             index = 0;
-                                            //levelchange = true;
                                         }
                                     }
                                     else
@@ -253,7 +212,6 @@ namespace CypherClasses
                                         {
                                             level++;
                                             index = 0;
-                                            //levelchange = true;
                                         }
 
                                     }
