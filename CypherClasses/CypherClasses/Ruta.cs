@@ -148,14 +148,13 @@ namespace CypherClasses
                     {
                         byte[] ByteArray = reader.ReadBytes(1000);
                         FillHorizontal(ByteArray);
-                        counter += 100;
+                        counter += 1000;
                     }
                     Message = SpiralArrangement();
                     return true;
                 }
             }
         }
-
         public void FillHorizontal(byte[] message)
         {
             int index = 0;
@@ -180,7 +179,6 @@ namespace CypherClasses
                 Matrixes.Add(aux);
             }
         }
-
         public byte[] SpiralArrangement()
         {
             List<byte> toReturn = new List<byte>();

@@ -33,8 +33,8 @@ namespace API_Interface.Controllers
             string uploadPath = path + @"\Cipher\" + OriginalName;
             byte[] FileBytes;
 
-            //try
-            //{
+            try
+            {
                 if (Key.File != null)
                 {
                     bool okCypher = false;
@@ -85,12 +85,12 @@ namespace API_Interface.Controllers
                 {
                     return StatusCode(500);
                 }
-            //}
-            //catch (Exception)
-            //{
-            //    return StatusCode(500);
-            //}
         }
+            catch (Exception)
+            {
+                return StatusCode(500);
+    }
+}
 
 
 
