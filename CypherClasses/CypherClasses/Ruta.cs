@@ -36,7 +36,7 @@ namespace CypherClasses
                     {
                         byte[] ByteArray = reader.ReadBytes(1000);
                         FillSpiral(ByteArray);
-                        counter += 100;
+                        counter += 1000;
                     }
                     cipheredMsg = HorizontalArrangement();
                     return true;

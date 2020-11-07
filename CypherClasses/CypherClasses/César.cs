@@ -39,15 +39,15 @@ namespace CypherClasses
             bool validKey = SetKey(_key);
             if (validKey)
             {
-                using (FileStream fs = File.OpenRead(route))
-                {
-                    using (BinaryReader reader = new BinaryReader(fs))
-                    {
-                        message = reader.ReadBytes(Convert.ToInt32(fs.Length));
-                    }
-                }
+                //using (FileStream fs = File.OpenRead(route))
+                //{
+                //    using (BinaryReader reader = new BinaryReader(fs))
+                //    {
+                //        message = reader.ReadBytes(Convert.ToInt32(fs.Length));
+                //    }
+                //}
                 FillDictionary(true);
-                CipheredMsg = ReplaceChars(message);
+                CipheredMsg = ReplaceChars(route);
             }
             else CipheredMsg = null;
             
@@ -57,28 +57,44 @@ namespace CypherClasses
             return validKey;
             
         }
-        byte[] ReplaceChars(byte[] Message)
+        byte[] ReplaceChars(string route)
         {
-            byte[] Encrypted = new byte[Message.Length];
-            for (int i = 0; i < Message.Length; i++)
+            byte[] Encrypted;
+            
+            using (FileStream fs = File.OpenRead(route))
             {
-                if (Message[i] > 64 && Message[i] < 91)
+                Encrypted = new byte[fs.Length];
+                using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    LetterPairs.TryGetValue((char)Message[i], out char replacement);
-                    Encrypted[i] = (byte)replacement;
-                }
-                else if (Message[i] > 96 && Message[i] < 123)
-                {
-                    char ToSearch = Convert.ToChar(((char)Message[i]).ToString().ToUpper());
-                    LetterPairs.TryGetValue(ToSearch, out char replacement);
-                    
-                    Encrypted[i] = (byte)Convert.ToChar(replacement.ToString().ToLower());
-                }
-                else
-                {
-                    Encrypted[i] = Message[i];
+                    int counter = 0;
+                    while (counter < fs.Length)
+                    {
+                        
+                        byte[] Message = reader.ReadBytes(1000);
+                        for (int i = 0; i < Message.Length; i++)
+                        {
+                            if (Message[i] > 64 && Message[i] < 91)
+                            {
+                                LetterPairs.TryGetValue((char)Message[i], out char replacement);
+                                Encrypted[counter + i] = (byte)replacement;
+                            }
+                            else if (Message[i] > 96 && Message[i] < 123)
+                            {
+                                char ToSearch = Convert.ToChar(((char)Message[i]).ToString().ToUpper());
+                                LetterPairs.TryGetValue(ToSearch, out char replacement);
+
+                                Encrypted[counter + i] = (byte)Convert.ToChar(replacement.ToString().ToLower());
+                            }
+                            else
+                            {
+                                Encrypted[counter + i] = Message[i];
+                            }
+                        }
+                        counter += 1000;
+                    }
                 }
             }
+            
             return Encrypted;
         }
         void FillDictionary(bool cipher)
@@ -137,7 +153,7 @@ namespace CypherClasses
                     }
                 }
                 FillDictionary(false);
-                Message = ReplaceChars(CipheredMsg);
+                Message = ReplaceChars(route);
             }
             else Message = null;
             

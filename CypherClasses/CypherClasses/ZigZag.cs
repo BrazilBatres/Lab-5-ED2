@@ -28,65 +28,96 @@ namespace CypherClasses
         }
         public bool Cipher(string route, out byte[] CipheredMsg, int levels)
         {
-            byte[] message;
+            //byte[] message;
             bool validLevel = SetLevels(levels);
-            using (FileStream fs = File.OpenRead(route))
-            {
-                using (BinaryReader reader = new BinaryReader(fs))
-                {
-                    message = reader.ReadBytes(Convert.ToInt32(fs.Length));
-                }
-            }
+            //using (FileStream fs = File.OpenRead(route))
+            //{
+            //    using (BinaryReader reader = new BinaryReader(fs))
+            //    {
+            //        message = reader.ReadBytes(Convert.ToInt32(fs.Length));
+            //    }
+            //}
             if (validLevel)
             {
                 Characters = new List<byte>[Levels];
-                
-                
-                CipheredMsg = LevelReading(ZigZagDistribution(message));
+                CipheredMsg = LevelReading(ZigZagDistribution(route));
             }
             else CipheredMsg = null;
             
             return validLevel;
         }
-        int ZigZagDistribution(byte[] Message)
+        int ZigZagDistribution(string route)
         {
             int ToSubstract = 0;
             int ToAssignLevel = 0;
             bool add = false;
             int WaveSize = 2*(Levels - 1);
-            int FillCharsQ = WaveSize - (Message.Length % WaveSize);
-            FindFillChar(Message);
-            //Se crea nuevo vector con el mensaje original pero agregando los caracteres de relleno
-            byte[] NewText = new byte[Message.Length + FillCharsQ];
-            for (int i = 0; i < Message.Length; i++)
-            {
-                NewText[i] = Message[i];
-            }
-            for (int i = Message.Length; i < NewText.Length; i++)
-            {
-                NewText[i] = ToFillChar;
-            }
+            int toReturn = 0;
+            int FillCharsQ;
             //Se inicializan las Listas
             for (int i = 0; i < Characters.Length; i++)
             {
                 Characters[i] = new List<byte>();
             }
-            //Se distribuyen caracteres en zigzag
-            for (int i = 0; i < NewText.Length; i++)
+            using (FileStream fs = File.OpenRead(route))
             {
-                ToAssignLevel = i - ToSubstract;
-                if (ToAssignLevel == (Levels - 1)) add = true;
-                if (ToAssignLevel == 0) add = false;
-                if (add) ToSubstract += 2;
-                Characters[ToAssignLevel].Add(NewText[i]);
+                toReturn = Convert.ToInt32(fs.Length);
+                FillCharsQ = WaveSize - (Convert.ToInt32(fs.Length) % WaveSize);
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    int counter = 0;
+                    while (counter < fs.Length)
+                    {
+                        byte[] Message = reader.ReadBytes(5);
+                        FindFillChar(Message);
+                        //Se distribuyen caracteres en zigzag
+                        for (int i = 0; i < Message.Length; i++)
+                        {
+                            ToAssignLevel = counter + i - ToSubstract;
+                            if (ToAssignLevel == (Levels - 1)) add = true;
+                            if (ToAssignLevel == 0) add = false;
+                            if (add) ToSubstract += 2;
+                            Characters[ToAssignLevel].Add(Message[i]);
+                        }
+                        counter += 5;
+                    }
+                    
+                }
             }
-            return NewText.Length;
+            
+            
+            //Se crea nuevo vector con el mensaje original pero agregando los caracteres de relleno
+            //byte[] NewText = new byte[Message.Length + FillCharsQ];
+            //for (int i = 0; i < Message.Length; i++)
+            //{
+            //    NewText[i] = Message[i];
+            //}
+
+            //for (int i = Message.Length; i < NewText.Length; i++)
+            //{
+            //    NewText[i] = ToFillChar;
+            //}
+            if (FillCharsQ > 0)
+            {
+                
+                for (int i = 0; i <FillCharsQ; i++)
+                {
+                    ToAssignLevel = toReturn + i - ToSubstract;
+                    if (ToAssignLevel == (Levels - 1)) add = true;
+                    if (ToAssignLevel == 0) add = false;
+                    if (add) ToSubstract += 2;
+                    Characters[ToAssignLevel].Add(ToFillChar);
+                }
+            }
+            
+            
+            return toReturn + FillCharsQ;
         }
         void FindFillChar(byte[] message)
         {
            
-            int fillChar = -1;
-            for (int i = 0; i < 256; i++)
+            int fillChar = ToFillChar;
+            for (int i = fillChar; i < 256; i++)
             {
                  bool NotInMsg = true;
                 for (int j = 0; j < message.Length; j++)
@@ -103,11 +134,8 @@ namespace CypherClasses
                     break;
                 }
             }
-            if (fillChar != -1)
-            {
-                ToFillChar = (byte)fillChar;
-            }
-            //else ¿Qué pasa si el texto incluye todos los caracteres?
+            ToFillChar = (byte)fillChar;
+            
 
         }
         byte[] LevelReading(int length)
@@ -130,22 +158,22 @@ namespace CypherClasses
         }
         public bool Decipher(string route,  out byte[] Message, int levels)
         {
-            byte[] CipheredMsg;
+            //byte[] CipheredMsg;
             bool validLevel = SetLevels(levels);
-            using (FileStream fs = File.OpenRead(route))
-            {
-                using (BinaryReader reader = new BinaryReader(fs))
-                {
-                    CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
-                }
-            }
-            int CompleteWaves = (CipheredMsg.Length) / (2 * (Levels - 1));
-            int Residue = (CipheredMsg.Length) % (2 * (Levels - 1));
+            //using (FileStream fs = File.OpenRead(route))
+            //{
+            //    using (BinaryReader reader = new BinaryReader(fs))
+            //    {
+            //        CipheredMsg = reader.ReadBytes(Convert.ToInt32(fs.Length));
+            //    }
+            //}
+            
             Characters = new List<byte>[Levels];
+            int messageLength = HorizontalDistribution(route, out int Residue);
             if (validLevel && Residue == 0)
             {
-                HorizontalDistribution(CipheredMsg, CompleteWaves);
-                Message = ZigZagReading(CipheredMsg.Length);
+                
+                Message = ZigZagReading(messageLength);
                 return true;
             }
             else
@@ -154,36 +182,92 @@ namespace CypherClasses
                 return false;
             }
         }
-        void HorizontalDistribution(byte[] _message, int completeWaves)
+        int HorizontalDistribution(string route, out int Residue)
         {
-            
+            int ToReturn = 0;
             //Se inicializan las Listas
             for (int i = 0; i < Characters.Length; i++)
             {
                 Characters[i] = new List<byte>();
             }
-            int index = 0;
-            for (int i = 0; i < Characters.Length; i++)
+            using (FileStream fs = File.OpenRead(route))
             {
-                if (i>0 && i<(Characters.Length-1))
+                ToReturn = Convert.ToInt32(fs.Length);
+                int completeWaves = (ToReturn) / (2 * (Levels - 1));
+                Residue = (ToReturn) % (2 * (Levels - 1));
+                if (Residue == 0)
                 {
-                    for (int j = 0; j < 2*completeWaves; j++)
+                    using (BinaryReader reader = new BinaryReader(fs))
                     {
+                        int counter = 0;
+                        int index = 0;
+                        int level = 0;
+                        bool levelchange = false;
+                        while (counter < fs.Length)
+                        {
+                            byte[] _message = reader.ReadBytes(1000);
 
-                        Characters[i].Add(_message[index]);
-                        index++;
+                            for (int i = 0; i < _message.Length; i++)
+                            {
+                                if (level <= Levels)
+                                {
+                                    if (level > 0 && level < (Characters.Length - 1))
+                                    {
+                                        bool firstIteration = true;
+                                        for (int j = index; j < 2 * completeWaves; j++)
+                                        {
+
+                                            if (!firstIteration) i++;
+                                            else firstIteration = false;
+                                            if (i < _message.Length)
+                                            {
+                                                Characters[level].Add(_message[i]);
+
+                                                index++;
+                                            }
+                                            else break;
+                                        }
+                                        if (index == 2*completeWaves)
+                                        {
+                                            level++;
+                                            index = 0;
+                                            //levelchange = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        bool firstIteration = true;
+                                        for (int j = index; j < completeWaves; j++)
+                                        {
+                                            if (!firstIteration) i++;
+                                            else firstIteration = false;
+                                            if (i < _message.Length)
+                                            {
+                                                Characters[level].Add(_message[i]);
+
+                                                index++;
+                                            }
+                                            else break;
+                                        }
+                                        if (index == completeWaves)
+                                        {
+                                            level++;
+                                            index = 0;
+                                            //levelchange = true;
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            counter += 1000;
+                        }
+
                     }
                 }
-                else
-                {
-                    for (int j = 0; j < completeWaves; j++)
-                    {
-                        
-                        Characters[i].Add(_message[index]);
-                        index++;
-                    }
-                }
+                return ToReturn;
             }
+            
 
 
         }

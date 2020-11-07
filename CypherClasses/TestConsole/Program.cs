@@ -38,41 +38,42 @@ namespace TestConsole
             //        Console.WriteLine("fail");
             //    }
             //    Console.ReadKey();
-            //string uploadPath = @"C:\Users\joseg\Desktop\Pruebas Cifrado\Cifrados\Spider.rt";
-            //byte[] FileBytes;
+            string uploadPath = @"C:\Users\brazi\Desktop\Pruebas Cifrado2.txt";
+            byte[] FileBytes;
             //Ruta ruta = new Ruta();
-            //ruta.SetSize(4, 3);
-            //ruta.Decipher(uploadPath, out FileBytes);
-            //using (FileStream fs = File.Create(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Descifrados\Spider.txt"))
-            //{
-            //    fs.Write(FileBytes);
-            //}
-
-            using (FileStream fs = File.OpenRead(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Originales\cuento.txt"))
+            //César césar = new César();
+            ZigZag césar = new ZigZag();
+            césar.Decipher(uploadPath, out FileBytes, 4);
+            using (FileStream fs = File.Create(@"C:\Users\brazi\Desktop\FuncionaPorfi.txt"))
             {
-                using (FileStream fs2 = File.OpenRead(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Descifrados\cuento2.txt"))
-                {
-                    using (BinaryReader reader = new BinaryReader(fs))
-                    {
-                        using (BinaryReader reader1 = new BinaryReader(fs2))
-                        {
-                            int counter = 0;
-                            byte array1;
-                            byte array2;
-                            while (counter<fs.Length)
-                            {
-                                array1 = reader.ReadByte();
-                                array2 = reader1.ReadByte();
-                                counter ++;
-                                if (array2 != array1)
-                                {
-                                    Console.WriteLine(false);
-                                }
-                            }
-                        }
-                    }
-                }
+                fs.Write(FileBytes);
             }
+
+            //using (FileStream fs = File.OpenRead(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Originales\cuento.txt"))
+            //{
+            //    using (FileStream fs2 = File.OpenRead(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Descifrados\cuento2.txt"))
+            //    {
+            //        using (BinaryReader reader = new BinaryReader(fs))
+            //        {
+            //            using (BinaryReader reader1 = new BinaryReader(fs2))
+            //            {
+            //                int counter = 0;
+            //                byte array1;
+            //                byte array2;
+            //                while (counter<fs.Length)
+            //                {
+            //                    array1 = reader.ReadByte();
+            //                    array2 = reader1.ReadByte();
+            //                    counter ++;
+            //                    if (array2 != array1)
+            //                    {
+            //                        Console.WriteLine(false);
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
         }
     }
 }
